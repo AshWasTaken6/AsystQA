@@ -28,10 +28,10 @@ def root() -> dict[str, str]:
 
 @app.post("/analyze")
 def analyze(request: AnalyzeRequest) -> dict:
-    planner_output = planner.run(request.code)
-    reviewer_output = reviewer.run(request.code)
-    security_output = security.run(request.code)
-    tester_output = tester.run(request.code)
+    planner_output = planner.run(request.code, request.language)
+    reviewer_output = reviewer.run(request.code, request.language)
+    security_output = security.run(request.code, request.language)
+    tester_output = tester.run(request.code, request.language)
     reporter_output = reporter.run(
         planner_output,
         reviewer_output,
