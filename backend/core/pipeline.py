@@ -1,9 +1,9 @@
-from backend.agents.planner import run_planner
-from backend.agents.reporter import run_reporter
-from backend.agents.reviewer import run_reviewer
-from backend.agents.security import run_security
-from backend.agents.tester import run_tester
-from backend.utils.logger import get_logger
+from agents.planner import run_planner
+from agents.reporter import run_reporter
+from agents.reviewer import run_reviewer
+from agents.security import run_security
+from agents.tester import run_tester
+from utils.logger import get_logger
 
 logger = get_logger(__name__)
 

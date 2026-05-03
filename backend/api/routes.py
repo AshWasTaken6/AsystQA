@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from backend.core.pipeline import run_pipeline
-from backend.schemas.request import AnalyzeRequest
-from backend.schemas.response import AnalyzeResponse
+from core.pipeline import run_pipeline
+from schemas.request import AnalyzeRequest
+from schemas.response import AnalyzeResponse
 
 router = APIRouter()
 

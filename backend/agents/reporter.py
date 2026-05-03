@@ -1,4 +1,4 @@
-from backend.schemas.response import Report
+from schemas.response import Report
 
 
 def run_reporter(aggregated: dict[str, list[str]]) -> Report:
