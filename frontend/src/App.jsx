@@ -8,6 +8,13 @@ function App() {
   function analyzeCode() {
     setResult({
       score: 82,
+      workflow: [
+        "Planner Agent: Complete",
+        "Reviewer Agent: Complete",
+        "Security Agent: Complete",
+        "Test Agent: Complete",
+        "Report Agent: Complete"
+      ],
       bugs: ["Unused variable detected", "Function is too long"],
       security: ["No input sanitization detected"],
       tests: ["test_login()", "test_register()"],
@@ -24,7 +31,11 @@ function App() {
         <div style={{ flex: 1, backgroundColor: "#1e293b", padding: "20px", borderRadius: "12px" }}>
           <h2>Code Input</h2>
 
-          <select value={language} onChange={(e) => setLanguage(e.target.value)} style={{ width: "100%", padding: "10px", marginBottom: "20px" }}>
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            style={{ width: "100%", padding: "10px", marginBottom: "20px", borderRadius: "8px" }}
+          >
             <option>Python</option>
             <option>JavaScript</option>
             <option>PHP</option>
@@ -34,10 +45,23 @@ function App() {
             value={code}
             onChange={(e) => setCode(e.target.value)}
             placeholder="Paste your code here..."
-            style={{ width: "100%", height: "300px", padding: "15px", borderRadius: "10px" }}
+            style={{ width: "100%", height: "300px", padding: "15px", borderRadius: "10px", resize: "none" }}
           />
 
-          <button onClick={analyzeCode} style={{ marginTop: "20px", width: "100%", padding: "15px", backgroundColor: "#3b82f6", color: "white", border: "none", borderRadius: "10px" }}>
+          <button
+            onClick={analyzeCode}
+            style={{
+              marginTop: "20px",
+              width: "100%",
+              padding: "15px",
+              backgroundColor: "#3b82f6",
+              color: "white",
+              border: "none",
+              borderRadius: "10px",
+              fontSize: "16px",
+              cursor: "pointer"
+            }}
+          >
             Analyze Code
           </button>
         </div>
@@ -50,6 +74,7 @@ function App() {
             </div>
           ) : (
             <>
+              <Card title="Agent Workflow" items={result.workflow} />
               <Card title="QA Score" items={[`${result.score} / 100`]} />
               <Card title="Bugs Found" items={result.bugs} />
               <Card title="Security Risks" items={result.security} />
@@ -69,7 +94,9 @@ function Card({ title, items }) {
       <h2>{title}</h2>
       <ul>
         {items.map((item, index) => (
-          <li key={index}>{item}</li>
+          <li key={index} style={{ marginBottom: "8px" }}>
+            {item}
+          </li>
         ))}
       </ul>
     </div>
