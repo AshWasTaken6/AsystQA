@@ -8,6 +8,8 @@ function App() {
   function analyzeCode() {
     setResult({
       score: 82,
+      totalIssues: 3,
+      agentsUsed: 5,
       workflow: [
         "Planner Agent: Complete",
         "Reviewer Agent: Complete",
@@ -23,18 +25,26 @@ function App() {
   }
 
   return (
-    <div style={{ backgroundColor: "#0f172a", minHeight: "100vh", color: "white", padding: "40px", fontFamily: "Arial" }}>
-      <h1>AsystQA Command Center</h1>
-      <p style={{ color: "#94a3b8" }}>Your AI Software QA Team in One Click</p>
+    <div style={styles.page}>
+      <div style={styles.header}>
+        <h1 style={styles.title}>AsystQA Command Center</h1>
+        <p style={styles.subtitle}>Your AI Software QA Team in One Click</p>
+      </div>
 
-      <div style={{ display: "flex", gap: "20px", marginTop: "30px" }}>
-        <div style={{ flex: 1, backgroundColor: "#1e293b", padding: "20px", borderRadius: "12px" }}>
+      <div style={styles.statsRow}>
+        <StatCard title="Agents" value={result ? result.agentsUsed : 5} />
+        <StatCard title="QA Score" value={result ? `${result.score}/100` : "--"} />
+        <StatCard title="Issues" value={result ? result.totalIssues : "--"} />
+      </div>
+
+      <div style={styles.mainGrid}>
+        <div style={styles.panel}>
           <h2>Code Input</h2>
 
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
-            style={{ width: "100%", padding: "10px", marginBottom: "20px", borderRadius: "8px" }}
+            style={styles.select}
           >
             <option>Python</option>
             <option>JavaScript</option>
@@ -45,37 +55,23 @@ function App() {
             value={code}
             onChange={(e) => setCode(e.target.value)}
             placeholder="Paste your code here..."
-            style={{ width: "100%", height: "300px", padding: "15px", borderRadius: "10px", resize: "none" }}
+            style={styles.textarea}
           />
 
-          <button
-            onClick={analyzeCode}
-            style={{
-              marginTop: "20px",
-              width: "100%",
-              padding: "15px",
-              backgroundColor: "#3b82f6",
-              color: "white",
-              border: "none",
-              borderRadius: "10px",
-              fontSize: "16px",
-              cursor: "pointer"
-            }}
-          >
+          <button onClick={analyzeCode} style={styles.button}>
             Analyze Code
           </button>
         </div>
 
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "20px" }}>
+        <div style={styles.resultsColumn}>
           {!result ? (
-            <div style={{ backgroundColor: "#1e293b", padding: "20px", borderRadius: "12px" }}>
+            <div style={styles.panel}>
               <h2>Results</h2>
-              <p style={{ color: "#94a3b8" }}>Run an analysis to see results.</p>
+              <p style={styles.muted}>Run an analysis to see results.</p>
             </div>
           ) : (
             <>
               <Card title="Agent Workflow" items={result.workflow} />
-              <Card title="QA Score" items={[`${result.score} / 100`]} />
               <Card title="Bugs Found" items={result.bugs} />
               <Card title="Security Risks" items={result.security} />
               <Card title="Tests Generated" items={result.tests} />
@@ -88,9 +84,18 @@ function App() {
   );
 }
 
+function StatCard({ title, value }) {
+  return (
+    <div style={styles.statCard}>
+      <p style={styles.statTitle}>{title}</p>
+      <h2 style={styles.statValue}>{value}</h2>
+    </div>
+  );
+}
+
 function Card({ title, items }) {
   return (
-    <div style={{ backgroundColor: "#1e293b", padding: "20px", borderRadius: "12px" }}>
+    <div style={styles.panel}>
       <h2>{title}</h2>
       <ul>
         {items.map((item, index) => (
@@ -102,5 +107,87 @@ function Card({ title, items }) {
     </div>
   );
 }
+
+const styles = {
+  page: {
+    backgroundColor: "#0f172a",
+    minHeight: "100vh",
+    color: "white",
+    padding: "40px",
+    fontFamily: "Arial"
+  },
+  header: {
+    marginBottom: "25px"
+  },
+  title: {
+    fontSize: "42px",
+    marginBottom: "10px"
+  },
+  subtitle: {
+    color: "#94a3b8",
+    fontSize: "18px"
+  },
+  statsRow: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: "20px",
+    marginBottom: "25px"
+  },
+  statCard: {
+    backgroundColor: "#1e293b",
+    padding: "20px",
+    borderRadius: "14px"
+  },
+  statTitle: {
+    color: "#94a3b8",
+    margin: 0
+  },
+  statValue: {
+    fontSize: "30px",
+    margin: "10px 0 0"
+  },
+  mainGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "20px"
+  },
+  panel: {
+    backgroundColor: "#1e293b",
+    padding: "20px",
+    borderRadius: "14px"
+  },
+  select: {
+    width: "100%",
+    padding: "10px",
+    marginBottom: "20px",
+    borderRadius: "8px"
+  },
+  textarea: {
+    width: "100%",
+    height: "300px",
+    padding: "15px",
+    borderRadius: "10px",
+    resize: "none"
+  },
+  button: {
+    marginTop: "20px",
+    width: "100%",
+    padding: "15px",
+    backgroundColor: "#3b82f6",
+    color: "white",
+    border: "none",
+    borderRadius: "10px",
+    fontSize: "16px",
+    cursor: "pointer"
+  },
+  resultsColumn: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "20px"
+  },
+  muted: {
+    color: "#94a3b8"
+  }
+};
 
 export default App;
