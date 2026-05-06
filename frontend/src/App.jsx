@@ -1,193 +1,142 @@
 import { useState } from "react";
+import "./App.css";
 
 function App() {
   const [code, setCode] = useState("");
   const [language, setLanguage] = useState("Python");
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   function analyzeCode() {
-    setResult({
-      score: 82,
-      totalIssues: 3,
-      agentsUsed: 5,
-      workflow: [
-        "Planner Agent: Complete",
-        "Reviewer Agent: Complete",
-        "Security Agent: Complete",
-        "Test Agent: Complete",
-        "Report Agent: Complete"
-      ],
-      bugs: ["Unused variable detected", "Function is too long"],
-      security: ["No input sanitization detected"],
-      tests: ["test_login()", "test_register()"],
-      summary: "Good structure, but some issues need fixing."
-    });
+    setLoading(true);
+    setResult(null);
+
+    setTimeout(() => {
+      setResult({
+        score: 82,
+        level: "Good",
+        issues: 3,
+        agents: 5,
+        workflow: [
+          { name: "Planner Agent", status: "Complete", detail: "Created QA workflow" },
+          { name: "Reviewer Agent", status: "Complete", detail: "Checked bugs and code quality" },
+          { name: "Security Agent", status: "Complete", detail: "Scanned risky patterns" },
+          { name: "Test Agent", status: "Complete", detail: "Generated test ideas" },
+          { name: "Report Agent", status: "Complete", detail: "Built final QA report" }
+        ],
+        bugs: ["Unused variable detected", "Function is too long"],
+        security: ["Input is not sanitized"],
+        tests: ["test_login()", "test_register()", "test_empty_input()"],
+        summary:
+          "The code has a good base, but it needs better input checks, shorter functions, and stronger testing."
+      });
+      setLoading(false);
+    }, 1200);
   }
 
   return (
-    <div style={styles.page}>
-      <div style={styles.header}>
-        <h1 style={styles.title}>AsystQA Command Center</h1>
-        <p style={styles.subtitle}>Your AI Software QA Team in One Click</p>
-      </div>
+    <div className="app">
+      <header className="hero">
+        <div>
+          <p className="badge">AMD Developer Hackathon • AI Agents Track</p>
+          <h1>AsystQA Command Center</h1>
+          <p className="subtitle">Your AI Software QA Team in One Click</p>
+        </div>
+      </header>
 
-      <div style={styles.statsRow}>
-        <StatCard title="Agents" value={result ? result.agentsUsed : 5} />
-        <StatCard title="QA Score" value={result ? `${result.score}/100` : "--"} />
-        <StatCard title="Issues" value={result ? result.totalIssues : "--"} />
-      </div>
+      <section className="stats">
+        <Stat title="Agents Used" value={result ? result.agents : 5} />
+        <Stat title="QA Score" value={result ? `${result.score}/100` : "--"} />
+        <Stat title="Issues Found" value={result ? result.issues : "--"} />
+        <Stat title="Status" value={loading ? "Running" : result ? "Complete" : "Ready"} />
+      </section>
 
-      <div style={styles.mainGrid}>
-        <div style={styles.panel}>
+      <main className="grid">
+        <section className="panel input-panel">
           <h2>Code Input</h2>
 
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            style={styles.select}
-          >
+          <label>Language</label>
+          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
             <option>Python</option>
             <option>JavaScript</option>
             <option>PHP</option>
           </select>
 
+          <label>Paste Code</label>
           <textarea
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="Paste your code here..."
-            style={styles.textarea}
+            placeholder={`Paste your ${language} code here...`}
           />
 
-          <button onClick={analyzeCode} style={styles.button}>
-            Analyze Code
+          <button onClick={analyzeCode} disabled={loading || code.trim() === ""}>
+            {loading ? "Agents Running..." : "Analyze Code"}
           </button>
-        </div>
+        </section>
 
-        <div style={styles.resultsColumn}>
-          {!result ? (
-            <div style={styles.panel}>
-              <h2>Results</h2>
-              <p style={styles.muted}>Run an analysis to see results.</p>
-            </div>
-          ) : (
-            <>
-              <Card title="Agent Workflow" items={result.workflow} />
-              <Card title="Bugs Found" items={result.bugs} />
-              <Card title="Security Risks" items={result.security} />
-              <Card title="Tests Generated" items={result.tests} />
-              <Card title="Summary" items={[result.summary]} />
-            </>
+        <section className="panel">
+          <h2>Agent Workflow</h2>
+
+          {!result && !loading && (
+            <p className="muted">Run an analysis to activate the agent workflow.</p>
           )}
-        </div>
-      </div>
+
+          {loading && (
+            <div className="loading-box">
+              <div className="loader"></div>
+              <p>Agents are reviewing your code...</p>
+            </div>
+          )}
+
+          {result && (
+            <div className="workflow">
+              {result.workflow.map((agent, index) => (
+                <div className="agent-card" key={index}>
+                  <div className="agent-dot"></div>
+                  <div>
+                    <h3>{agent.name}</h3>
+                    <p>{agent.detail}</p>
+                    <span>{agent.status}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      </main>
+
+      {result && (
+        <section className="results">
+          <ResultCard title="Bugs Found" items={result.bugs} />
+          <ResultCard title="Security Risks" items={result.security} />
+          <ResultCard title="Tests Generated" items={result.tests} />
+          <ResultCard title="Final Summary" items={[result.summary]} />
+        </section>
+      )}
     </div>
   );
 }
 
-function StatCard({ title, value }) {
+function Stat({ title, value }) {
   return (
-    <div style={styles.statCard}>
-      <p style={styles.statTitle}>{title}</p>
-      <h2 style={styles.statValue}>{value}</h2>
+    <div className="stat-card">
+      <p>{title}</p>
+      <h2>{value}</h2>
     </div>
   );
 }
 
-function Card({ title, items }) {
+function ResultCard({ title, items }) {
   return (
-    <div style={styles.panel}>
+    <div className="result-card">
       <h2>{title}</h2>
       <ul>
         {items.map((item, index) => (
-          <li key={index} style={{ marginBottom: "8px" }}>
-            {item}
-          </li>
+          <li key={index}>{item}</li>
         ))}
       </ul>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    backgroundColor: "#0f172a",
-    minHeight: "100vh",
-    color: "white",
-    padding: "40px",
-    fontFamily: "Arial"
-  },
-  header: {
-    marginBottom: "25px"
-  },
-  title: {
-    fontSize: "42px",
-    marginBottom: "10px"
-  },
-  subtitle: {
-    color: "#94a3b8",
-    fontSize: "18px"
-  },
-  statsRow: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: "20px",
-    marginBottom: "25px"
-  },
-  statCard: {
-    backgroundColor: "#1e293b",
-    padding: "20px",
-    borderRadius: "14px"
-  },
-  statTitle: {
-    color: "#94a3b8",
-    margin: 0
-  },
-  statValue: {
-    fontSize: "30px",
-    margin: "10px 0 0"
-  },
-  mainGrid: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "20px"
-  },
-  panel: {
-    backgroundColor: "#1e293b",
-    padding: "20px",
-    borderRadius: "14px"
-  },
-  select: {
-    width: "100%",
-    padding: "10px",
-    marginBottom: "20px",
-    borderRadius: "8px"
-  },
-  textarea: {
-    width: "100%",
-    height: "300px",
-    padding: "15px",
-    borderRadius: "10px",
-    resize: "none"
-  },
-  button: {
-    marginTop: "20px",
-    width: "100%",
-    padding: "15px",
-    backgroundColor: "#3b82f6",
-    color: "white",
-    border: "none",
-    borderRadius: "10px",
-    fontSize: "16px",
-    cursor: "pointer"
-  },
-  resultsColumn: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "20px"
-  },
-  muted: {
-    color: "#94a3b8"
-  }
-};
 
 export default App;
