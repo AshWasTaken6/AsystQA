@@ -1,0 +1,19 @@
+{
+  "total_scans": 2,
+  "common_issues": {
+    "Too many print statements": 2,
+    "No security risks detected": 2
+  },
+  "history": [
+    {
+      "timestamp": "2026-05-08T16:43:30.796891",
+      "review_issues": 1,
+      "security_issues": 1
+    },
+    {
+      "timestamp": "2026-05-08T16:47:54.187989",
+      "review_issues": 1,
+      "security_issues": 1
+    }
+  ]
+}
