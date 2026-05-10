@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 
+from agents.critic import run_critic
 from agents.planner import run_planner
-from agents.reviewer import run_reviewer
 from agents.security import run_security
+from agents.sentinel import run_sentinel
 from agents.tester import run_tester
 from core.auth import TokenData, get_current_user, get_user
 from core.authorization import get_all_user_permissions
@@ -19,10 +20,11 @@ class AgentDefinition:
 
 
 AGENT_REGISTRY: dict[str, AgentDefinition] = {
-    "planner": AgentDefinition("planner", "1.0.0", "planning", run_planner),
-    "reviewer": AgentDefinition("reviewer", "1.0.0", "quality", run_reviewer),
-    "security": AgentDefinition("security", "1.0.0", "security", run_security),
-    "tester": AgentDefinition("tester", "1.0.0", "testing", run_tester),
+    "architect": AgentDefinition("architect", "2.0.0", "planning", run_planner, required=True),
+    "sentinel": AgentDefinition("sentinel", "2.0.0", "diagnostics", run_sentinel, required=True),
+    "auditor": AgentDefinition("auditor", "2.0.0", "security", run_security, required=True),
+    "critic": AgentDefinition("critic", "2.0.0", "formal-review", run_critic, required=True),
+    "chaos_engineer": AgentDefinition("chaos_engineer", "2.0.0", "testing", run_tester, required=True),
 }
 
 

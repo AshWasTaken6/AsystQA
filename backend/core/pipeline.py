@@ -2,10 +2,11 @@ import asyncio
 import time
 from uuid import uuid4
 
+from agents.critic import run_critic
 from agents.planner import run_planner
 from agents.reporter import run_reporter
-from agents.reviewer import run_reviewer
 from agents.security import run_security
+from agents.sentinel import run_sentinel
 from agents.tester import run_tester
 from core.context import get_correlation_id
 from services.audit import audit_log
@@ -108,13 +109,75 @@ async def run_pipeline(
             "message": f"Redacted {len(secret_map)} potential secret(s) before analysis.",
         })
 
-    # RUN AGENTS (with timing)
-    planner_output, reviewer_output, security_output, tester_output = await asyncio.gather(
-        _run_agent("planner", run_planner, redacted_code, language_used, [], warnings),
-        _run_agent("reviewer", run_reviewer, redacted_code, language_used, [], warnings),
-        _run_agent("security", run_security, redacted_code, language_used, [], warnings),
-        _run_agent("tester", run_tester, redacted_code, language_used, [], warnings),
+    # RUN AUTONOMOUS SWARM (feedback order is intentional)
+    architect_initial = await _run_agent(
+        "architect",
+        run_planner,
+        redacted_code,
+        language_used,
+        [],
+        warnings,
     )
+    sentinel_output = await _run_agent(
+        "sentinel",
+        run_sentinel,
+        redacted_code,
+        language_used,
+        [],
+        warnings,
+        {"architect": architect_initial},
+    )
+    auditor_output = await _run_agent(
+        "auditor",
+        run_security,
+        redacted_code,
+        language_used,
+        [],
+        warnings,
+        {"architect": architect_initial, "sentinel": sentinel_output},
+    )
+    critic_output = await _run_agent(
+        "critic",
+        run_critic,
+        redacted_code,
+        language_used,
+        [],
+        warnings,
+        {"architect": architect_initial, "sentinel": sentinel_output, "auditor": auditor_output},
+    )
+    chaos_output = await _run_agent(
+        "chaos_engineer",
+        run_tester,
+        redacted_code,
+        language_used,
+        [],
+        warnings,
+        {
+            "architect": architect_initial,
+            "sentinel": sentinel_output,
+            "auditor": auditor_output,
+            "critic": critic_output,
+        },
+    )
+    architect_replan = await _run_agent(
+        "architect_replan",
+        run_planner,
+        redacted_code,
+        language_used,
+        [],
+        warnings,
+        {
+            "sentinel": sentinel_output,
+            "auditor": auditor_output,
+            "critic": critic_output,
+            "chaos_engineer": chaos_output,
+        },
+    )
+
+    planner_output = [*architect_initial, *architect_replan]
+    reviewer_output = [*sentinel_output, *critic_output]
+    security_output = auditor_output
+    tester_output = chaos_output
 
     # REPORT
     with _timed("reporter"):
@@ -150,7 +213,27 @@ async def run_pipeline(
         user_id=user_id,
     )
 
-    insights = get_insights()
+    insights = {
+        **get_insights(),
+        "swarm": {
+            "framework": "Zero-Trust, Maximum-Rigidity",
+            "feedback_loop": [
+                "architect.initial",
+                "sentinel.deep_trace",
+                "auditor.threat_model",
+                "critic.formal_review",
+                "chaos_engineer.adversarial_tests",
+                "architect.replan",
+            ],
+            "agents": {
+                "architect": len(planner_output),
+                "sentinel": len(sentinel_output),
+                "auditor": len(auditor_output),
+                "critic": len(critic_output),
+                "chaos_engineer": len(chaos_output),
+            },
+        },
+    }
     increment_scan(language_used, "success")
 
     elapsed = round(time.time() - start, 2)
@@ -214,13 +297,21 @@ class _timed:
         return False
 
 
-async def _run_agent(name: str, func, code: str, language: str, fallback: list, warnings: list[dict]) -> list:
+async def _run_agent(
+    name: str,
+    func,
+    code: str,
+    language: str,
+    fallback: list,
+    warnings: list[dict],
+    context: dict | None = None,
+) -> list:
     """Run an agent with timeout/retry/circuit breaker and record partial-result warnings."""
     started = time.perf_counter()
     try:
         return await with_resilience(
             name,
-            lambda: func(code, language),
+            lambda: func(code, language, context or {}),
         )
     except Exception as exc:
         logger.exception("Agent failed: %s", name)

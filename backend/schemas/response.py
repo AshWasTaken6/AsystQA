@@ -8,7 +8,7 @@ class Report(BaseModel):
     summary: str
     risk: str
     issueCount: int
-    issues: List[Dict[str, str]]
+    issues: List[Dict[str, Any]]
     tests: List[Dict[str, str]]
 
 
