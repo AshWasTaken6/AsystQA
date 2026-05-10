@@ -1,11 +1,5 @@
 import MarketingNav from "./MarketingNav";
 
-const trustStats = [
-  ["4", "specialist agents"],
-  ["92", "sample QA score"],
-  ["28", "issues triaged"],
-];
-
 function LandingPage({ openDashboard, openLogin, openLanding, openPricing, openAbout }) {
   return (
     <section className="landingPage">
@@ -39,15 +33,6 @@ function LandingPage({ openDashboard, openLogin, openLanding, openPricing, openA
           </button>
         </div>
 
-        <div className="trustStrip" aria-label="AsystQA highlights">
-          {trustStats.map(([value, label]) => (
-            <div key={label}>
-              <strong>{value}</strong>
-              <span>{label}</span>
-            </div>
-          ))}
-        </div>
-
         <div className="chipRow" aria-label="Core tools">
           <span>&lt;/&gt; Code Review</span>
           <span>Security Scan</span>
@@ -57,63 +42,46 @@ function LandingPage({ openDashboard, openLogin, openLanding, openPricing, openA
           <span>Upload File</span>
         </div>
 
-        <div className="previewGrid">
-          <div className="previewCard scorePreview">
-            <div className="donut">
-              <strong>92</strong>
-              <small>/100</small>
-            </div>
-            <div>
-              <h3>QA Score</h3>
-              <h2>Excellent</h2>
-              <p>Code quality looks great. Keep it up.</p>
-              <a>View full report →</a>
-            </div>
+        <section className="howItWorks">
+          <div className="sectionIntro">
+            <span>Workflow</span>
+            <h2>How AsystQA Works</h2>
+            <p>
+              A simple flow that turns raw code into a structured QA report using specialist agents.
+            </p>
           </div>
 
-          <div className="previewCard">
-            <h3>Issues Found</h3>
-            <strong className="bigNumber">28</strong>
-            <p>12 High · 10 Medium · 6 Low</p>
-          </div>
+          <div className="workflowCards">
+            <WorkflowCard
+              number="01"
+              title="Paste or Upload Code"
+              text="Start by pasting code into the editor or uploading a project file for analysis."
+            />
 
-          <div className="previewCard">
-            <h3>Risk Level</h3>
-            <div className="riskPreview">
-              <span>🛡</span>
-              <div>
-                <h2>Medium</h2>
-                <p>Some vulnerabilities need attention.</p>
-              </div>
-            </div>
-          </div>
+            <WorkflowCard
+              number="02"
+              title="Agents Review the Code"
+              text="Planner, Reviewer, Security, Tester, and Reporter agents work together through a clear QA workflow."
+            />
 
-          <div className="previewCard workflowPreview">
-            <div className="cardHeader">
-              <h3>Agent Workflow</h3>
-              <a>View timeline →</a>
-            </div>
-
-            <div className="miniWorkflow">
-              <MiniStep title="Code" status="Done" />
-              <MiniStep title="Security" status="Done" orange />
-              <MiniStep title="Tests" status="Done" />
-              <MiniStep title="Report" status="Progress" orange />
-              <MiniStep title="Final" status="Pending" blue />
-            </div>
+            <WorkflowCard
+              number="03"
+              title="Get a QA Report"
+              text="Receive a QA score, risk level, issue breakdown, suggested tests, and downloadable report."
+            />
           </div>
-        </div>
+        </section>
       </main>
     </section>
   );
 }
 
-function MiniStep({ title, status, orange, blue }) {
+function WorkflowCard({ number, title, text }) {
   return (
-    <div className="miniStep">
-      <div className={`${orange ? "orange" : ""} ${blue ? "blue" : ""}`}></div>
-      <strong>{title}</strong>
-      <span>{status}</span>
+    <div className="workflowCard">
+      <div className="workflowNumber">{number}</div>
+      <h3>{title}</h3>
+      <p>{text}</p>
     </div>
   );
 }

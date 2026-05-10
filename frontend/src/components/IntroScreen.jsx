@@ -1,28 +1,42 @@
 function IntroScreen({ openDashboard, openLanding }) {
   return (
-    <section className="introScreen">
+    <section className="introScreen" onClick={openLanding}>
       <video className="introVideo" autoPlay muted loop playsInline>
         <source src="/intro.mp4" type="video/mp4" />
       </video>
 
       <div className="introDarkLayer"></div>
 
-      <button className="introTinyLogo" onClick={openLanding} title="Open welcome page">
+      <button
+        className="introTinyLogo"
+        onClick={(event) => {
+          event.stopPropagation();
+          openLanding();
+        }}
+        title="Open welcome page"
+      >
         <img src="/logo.png" alt="AsystQA Logo" />
       </button>
 
       <div className="introHeroText">
-        <p>AI Agents for Software QA</p>
-        <h1>AsystQA Command Center</h1>
-        <span>Review code, find issues, generate tests, and build QA reports.</span>
+        <h1>
+          AsystQA <br />
+          Command Center
+        </h1>
+
+        <span>
+          AI agents that review code, detect risks, and generate QA reports.
+        </span>
 
         <div className="introHeroActions">
-          <button className="introPrimaryBtn" onClick={openDashboard}>
-            Enter Command Center →
-          </button>
-
-          <button className="introSecondaryBtn" onClick={openLanding}>
-            View Welcome Page
+          <button
+            className="introPrimaryBtn"
+            onClick={(event) => {
+              event.stopPropagation();
+              openDashboard("overview");
+            }}
+          >
+            Enter Command Center 
           </button>
         </div>
       </div>

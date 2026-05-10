@@ -7,8 +7,11 @@ import PricingPage from "./components/PricingPage";
 import AboutPage from "./components/AboutPage";
 import Dashboard from "./components/Dashboard";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+
 const USERS_STORAGE_KEY = "asystqa.users";
+const AUTH_STORAGE_KEY = "asystqa.authUser";
 
 const sampleCode = `function calculateTotal(items) {
   let total = 0;
@@ -39,7 +42,9 @@ const demoUsers = [
 
 function loadUsers() {
   try {
-    const storedUsers = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "[]");
+    const storedUsers = JSON.parse(
+      localStorage.getItem(USERS_STORAGE_KEY) || "[]"
+    );
 
     if (!Array.isArray(storedUsers)) {
       return demoUsers;
@@ -48,6 +53,7 @@ function loadUsers() {
     const storedEmails = new Set(
       storedUsers.map((storedUser) => storedUser.email?.toLowerCase())
     );
+
     const missingDemoUsers = demoUsers.filter(
       (demoUser) => !storedEmails.has(demoUser.email.toLowerCase())
     );
@@ -62,11 +68,21 @@ function saveUsers(nextUsers) {
   const customUsers = nextUsers.filter(
     (nextUser) =>
       !demoUsers.some(
-        (demoUser) => demoUser.email.toLowerCase() === nextUser.email.toLowerCase()
+        (demoUser) =>
+          demoUser.email.toLowerCase() === nextUser.email.toLowerCase()
       )
   );
 
   localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(customUsers));
+}
+
+function getSafeUser(user) {
+  return {
+    name: user.name,
+    role: user.role,
+    email: user.email,
+    initials: user.initials,
+  };
 }
 
 function App() {
@@ -97,6 +113,19 @@ function App() {
     saveUsers(users);
   }, [users]);
 
+  useEffect(() => {
+    try {
+      const savedUser = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY));
+
+      if (savedUser) {
+        setUser(savedUser);
+        setScreen("dashboard");
+      }
+    } catch {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+  }, []);
+
   function showToast(message) {
     setToast(message);
     setTimeout(() => setToast(""), 2300);
@@ -123,9 +152,10 @@ function App() {
     setScreen("about");
   }
 
-  function login(email, password) {
+  function login(email, password, rememberMe = false) {
     const normalizedEmail = email.trim().toLowerCase();
     const normalizedPassword = password.trim();
+
     const foundUser = users.find(
       (demoUser) =>
         demoUser.email.toLowerCase() === normalizedEmail &&
@@ -137,14 +167,23 @@ function App() {
       return false;
     }
 
-    setUser(foundUser);
+    const safeUser = getSafeUser(foundUser);
+
+    setUser(safeUser);
+
+    if (rememberMe) {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(safeUser));
+    } else {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+
     setShowLogin(false);
     setScreen("dashboard");
-    showToast(`Welcome, ${foundUser.name}`);
+    showToast(`Welcome, ${safeUser.name}`);
     return true;
   }
 
-  function register(email, password, name) {
+  function register(email, password, name, rememberMe = false) {
     const normalizedEmail = email.trim().toLowerCase();
     const normalizedPassword = password.trim();
     const normalizedName = name.trim();
@@ -176,15 +215,25 @@ function App() {
         .toUpperCase(),
     };
 
+    const safeUser = getSafeUser(newUser);
+
     setUsers((prevUsers) => [...prevUsers, newUser]);
-    setUser(newUser);
+    setUser(safeUser);
+
+    if (rememberMe) {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(safeUser));
+    } else {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+
     setShowLogin(false);
     setScreen("dashboard");
-    showToast(`Welcome, ${newUser.name}`);
+    showToast(`Welcome, ${safeUser.name}`);
     return true;
   }
 
   function logout() {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
     setUser(null);
     setDashboardPage("overview");
     setScreen("landing");
@@ -273,10 +322,7 @@ function App() {
   return (
     <div className="app">
       {screen === "intro" && (
-        <IntroScreen
-          openDashboard={openDashboard}
-          openLanding={openLanding}
-        />
+        <IntroScreen openDashboard={openDashboard} openLanding={openLanding} />
       )}
 
       {screen === "landing" && (
@@ -353,10 +399,17 @@ Risk Level: ${report.risk}
 Issues Found: ${report.issueCount}
 
 Issues:
-${report.issues.map((issue, index) => `${index + 1}. [${issue.severity}] ${issue.title} - ${issue.text}`).join("\n")}
+${report.issues
+  .map(
+    (issue, index) =>
+      `${index + 1}. [${issue.severity}] ${issue.title} - ${issue.text}`
+  )
+  .join("\n")}
 
 Suggested Tests:
-${report.tests.map((test, index) => `${index + 1}. ${test.title} (${test.type})`).join("\n")}
+${report.tests
+  .map((test, index) => `${index + 1}. ${test.title} (${test.type})`)
+  .join("\n")}
 `;
 }
 

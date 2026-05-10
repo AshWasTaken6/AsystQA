@@ -1,38 +1,21 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 function LoginModal({ login, register, closeLogin }) {
-  const [mode, setMode] = useState('signin');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const demoAccounts = [
-    {
-      label: 'Admin',
-      email: 'admin@asystqa.com',
-      password: 'admin123',
-    },
-    {
-      label: 'Developer',
-      email: 'dev@asystqa.com',
-      password: 'dev123',
-    },
-  ];
+  const [mode, setMode] = useState("signin");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    if (mode === 'signup') {
-      register(email, password, name);
+    if (mode === "signup") {
+      register(email, password, name, rememberMe);
       return;
     }
 
-    login(email, password);
-  }
-
-  function fillDemoAccount(account) {
-    setEmail(account.email);
-    setPassword(account.password);
+    login(email, password, rememberMe);
   }
 
   return (
@@ -44,14 +27,19 @@ function LoginModal({ login, register, closeLogin }) {
 
         <img src="/logo.png" alt="AsystQA Logo" />
 
-        <h2>{mode === 'signin' ? 'Sign in to AsystQA' : 'Create your AsystQA account'}</h2>
+        <h2>
+          {mode === "signin"
+            ? "Sign in to AsystQA"
+            : "Create your AsystQA account"}
+        </h2>
+
         <p>
-          {mode === 'signin'
-            ? 'Try a demo account or sign up for quick access.'
-            : 'Register with your email and start using the command center.'}
+          {mode === "signin"
+            ? "Access your command center and continue your QA workflow."
+            : "Create an account to start reviewing code with AsystQA."}
         </p>
 
-        {mode === 'signup' && (
+        {mode === "signup" && (
           <label>
             Name
             <input
@@ -83,43 +71,36 @@ function LoginModal({ login, register, closeLogin }) {
           />
         </label>
 
+        <label className="rememberMeRow">
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+          />
+          <span>Remember me on this device</span>
+        </label>
+
         <button type="submit" className="loginSubmitBtn">
-          {mode === 'signin' ? 'Sign In →' : 'Sign Up →'}
+          {mode === "signin" ? "Sign In →" : "Sign Up →"}
         </button>
 
         <div className="authToggle">
-          {mode === 'signin' ? (
+          {mode === "signin" ? (
             <p>
-              Don’t have an account?{' '}
-              <button type="button" onClick={() => setMode('signup')}>
+              Don’t have an account?{" "}
+              <button type="button" onClick={() => setMode("signup")}>
                 Sign up
               </button>
             </p>
           ) : (
             <p>
-              Already have an account?{' '}
-              <button type="button" onClick={() => setMode('signin')}>
+              Already have an account?{" "}
+              <button type="button" onClick={() => setMode("signin")}>
                 Sign in
               </button>
             </p>
           )}
         </div>
-
-        {mode === 'signin' && (
-          <div className="demoAccounts">
-            <strong>Demo accounts</strong>
-            <p>Select one to autofill credentials.</p>
-            {demoAccounts.map((account) => (
-              <button
-                type="button"
-                key={account.label}
-                onClick={() => fillDemoAccount(account)}
-              >
-                {account.label}: {account.email}
-              </button>
-            ))}
-          </div>
-        )}
       </form>
     </div>
   );
