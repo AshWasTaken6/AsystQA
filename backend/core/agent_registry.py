@@ -1,10 +1,23 @@
 from dataclasses import dataclass
+from typing import Any
 
-from agents.critic import run_critic
-from agents.planner import run_planner
-from agents.security import run_security
-from agents.sentinel import run_sentinel
-from agents.tester import run_tester
+# Import agent classes for registry
+try:
+    from agents.sentinel import SentinelAgent, run_sentinel
+    from agents.critic import CriticAgent, run_critic
+    from agents.security import AuditorAgent, run_security
+    from agents.planner import ArchitectAgent, run_planner
+    from agents.tester import ChaosEngineerAgent, run_tester
+    from agents.reporter import ReporterAgent
+    AGENT_CLASSES_AVAILABLE = True
+except ImportError:
+    AGENT_CLASSES_AVAILABLE = False
+    run_sentinel = None
+    run_critic = None
+    run_security = None
+    run_planner = None
+    run_tester = None
+
 from core.auth import TokenData, get_current_user, get_user
 from core.authorization import get_all_user_permissions
 from fastapi import Depends, HTTPException, status
@@ -17,14 +30,51 @@ class AgentDefinition:
     category: str
     callable: object
     required: bool = False
+    agent_class: type = None  # Reference to agent class for factory
 
 
+# Agent registry with version tracking
 AGENT_REGISTRY: dict[str, AgentDefinition] = {
-    "architect": AgentDefinition("architect", "2.0.0", "planning", run_planner, required=True),
-    "sentinel": AgentDefinition("sentinel", "2.0.0", "diagnostics", run_sentinel, required=True),
-    "auditor": AgentDefinition("auditor", "2.0.0", "security", run_security, required=True),
-    "critic": AgentDefinition("critic", "2.0.0", "formal-review", run_critic, required=True),
-    "chaos_engineer": AgentDefinition("chaos_engineer", "2.0.0", "testing", run_tester, required=True),
+    "architect": AgentDefinition(
+        "architect",
+        "3.0.0",
+        "planning",
+        run_planner,  # compatibility wrapper
+        required=True,
+        agent_class=ArchitectAgent if AGENT_CLASSES_AVAILABLE else None,
+    ),
+    "sentinel": AgentDefinition(
+        "sentinel",
+        "3.0.0",
+        "diagnostics",
+        run_sentinel,
+        required=True,
+        agent_class=SentinelAgent if AGENT_CLASSES_AVAILABLE else None,
+    ),
+    "auditor": AgentDefinition(
+        "auditor",
+        "3.0.0",
+        "security",
+        run_security,
+        required=True,
+        agent_class=AuditorAgent if AGENT_CLASSES_AVAILABLE else None,
+    ),
+    "critic": AgentDefinition(
+        "critic",
+        "3.0.0",
+        "formal-review",
+        run_critic,
+        required=True,
+        agent_class=CriticAgent if AGENT_CLASSES_AVAILABLE else None,
+    ),
+    "chaos_engineer": AgentDefinition(
+        "chaos_engineer",
+        "3.0.0",
+        "testing",
+        run_tester,
+        required=True,
+        agent_class=ChaosEngineerAgent if AGENT_CLASSES_AVAILABLE else None,
+    ),
 }
 
 

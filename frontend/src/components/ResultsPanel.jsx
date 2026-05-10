@@ -38,11 +38,12 @@ function ResultsPanel({ report, activeTab, setActiveTab, copyReport, downloadRep
           </div>
 
           <div className="agentTimeline">
-            <AgentStep icon="✓" title="Planner" status="Completed" time="2m 10s" />
-            <AgentStep icon="✦" title="Reviewer" status="Completed" time="3m 45s" />
-            <AgentStep icon="🛡" title="Security" status="Completed" time="4m 22s" orange />
-            <AgentStep icon="⚗" title="Tester" status="In Progress" time="2m 05s" />
-            <AgentStep icon="📄" title="Reporter" status="Pending" time="—" pending />
+            <AgentStep icon="A" title="Architect" status="Completed" time="Plan" />
+            <AgentStep icon="S" title="Sentinel" status="Completed" time="Trace" />
+            <AgentStep icon="U" title="Auditor" status="Completed" time="Threat" orange />
+            <AgentStep icon="C" title="Critic" status="Completed" time="Verify" />
+            <AgentStep icon="X" title="Chaos" status="Completed" time="Break" />
+            <AgentStep icon="R" title="Re-plan" status="Completed" time="Loop" pending />
           </div>
 
           <div className="sectionTitle">
@@ -114,6 +115,14 @@ function IssueCard({ issue }) {
       <span className={`severity ${issue.severity.toLowerCase()}`}>{issue.severity}</span>
       <h3>{issue.title}</h3>
       <p>{issue.text}</p>
+      <div className="issueEvidence">
+        {issue.agent && <span>{issue.agent}</span>}
+        {issue.lineNumber && <span>Line {issue.lineNumber}</span>}
+        {issue.predictedException && <span>{issue.predictedException}</span>}
+        {issue.owasp && <span>{issue.owasp}</span>}
+      </div>
+      {issue.rootCause && <small>Root cause: {issue.rootCause}</small>}
+      {issue.recovery && <small>Recovery: {issue.recovery}</small>}
       <small>Detected by AsystQA Agent</small>
     </div>
   );

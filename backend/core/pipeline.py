@@ -306,13 +306,19 @@ async def _run_agent(
     warnings: list[dict],
     context: dict | None = None,
 ) -> list:
-    """Run an agent with timeout/retry/circuit breaker and record partial-result warnings."""
+    """
+    Run an agent with timeout/retry/circuit breaker.
+
+    Uses resilience layer and records timing. On failure, returns
+    fallback value and logs warning.
+    """
     started = time.perf_counter()
     try:
-        return await with_resilience(
+        result = await with_resilience(
             name,
             lambda: func(code, language, context or {}),
         )
+        return result
     except Exception as exc:
         logger.exception("Agent failed: %s", name)
         warnings.append({
@@ -321,6 +327,15 @@ async def _run_agent(
             "message": f"{name} failed; continuing with partial results.",
             "error": type(exc).__name__,
         })
+        # Log failure to audit
+        from services.audit import audit_log
+        audit_log(
+            action="agent.failed",
+            outcome="failure",
+            resource="agent",
+            resource_id=name,
+            metadata={"error": str(exc), "language": language},
+        )
         return fallback
     finally:
         elapsed = time.perf_counter() - started
