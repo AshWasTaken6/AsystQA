@@ -1,1 +1,0 @@
-"""AsystQA backend package."""
