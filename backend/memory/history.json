@@ -1,0 +1,136 @@
+{
+  "total_scans": 19,
+  "common_issues": {
+    "Too many print statements": 6,
+    "No security risks detected": 10,
+    "No major issues found": 2,
+    "Lines exceed 100 characters": 3,
+    "Hardcoded sensitive data": 6,
+    "Password handling may be insecure": 2,
+    "Console logs left in code": 1,
+    "Use of eval()": 4
+  },
+  "history": [
+    {
+      "timestamp": "2026-05-08T16:43:30.796891",
+      "review_issues": 1,
+      "security_issues": 1
+    },
+    {
+      "timestamp": "2026-05-08T16:47:54.187989",
+      "review_issues": 1,
+      "security_issues": 1
+    },
+    {
+      "timestamp": "2026-05-09T19:57:08.008756",
+      "review_issues": 1,
+      "security_issues": 1
+    },
+    {
+      "timestamp": "2026-05-09T19:57:27.691556",
+      "review_issues": 1,
+      "security_issues": 1
+    },
+    {
+      "timestamp": "2026-05-09T19:57:55.192810",
+      "review_issues": 1,
+      "security_issues": 1
+    },
+    {
+      "timestamp": "2026-05-09T21:58:30.876115",
+      "review_issues": 1,
+      "security_issues": 1
+    },
+    {
+      "timestamp": "2026-05-09T22:28:36.685470",
+      "language": "javascript",
+      "review_issues": 1,
+      "security_issues": 1,
+      "issue_total": 2
+    },
+    {
+      "timestamp": "2026-05-09T22:28:48.833462",
+      "language": "javascript",
+      "review_issues": 1,
+      "security_issues": 1,
+      "issue_total": 2
+    },
+    {
+      "timestamp": "2026-05-09T22:30:19.632245",
+      "language": "javascript",
+      "review_issues": 1,
+      "security_issues": 2,
+      "issue_total": 3
+    },
+    {
+      "timestamp": "2026-05-09T22:34:59.459347",
+      "language": "javascript",
+      "review_issues": 1,
+      "security_issues": 2,
+      "issue_total": 3
+    },
+    {
+      "timestamp": "2026-05-10T09:17:43.697986",
+      "language": "javascript",
+      "review_issues": 1,
+      "security_issues": 1,
+      "issue_total": 2
+    },
+    {
+      "timestamp": "2026-05-10T09:24:01.853436",
+      "language": "javascript",
+      "review_issues": 1,
+      "security_issues": 1,
+      "issue_total": 2
+    },
+    {
+      "timestamp": "2026-05-10T09:25:43.782268",
+      "language": "javascript",
+      "review_issues": 0,
+      "security_issues": 0,
+      "issue_total": 0
+    },
+    {
+      "timestamp": "2026-05-10T09:29:45.277523",
+      "language": "python",
+      "review_issues": 0,
+      "security_issues": 2,
+      "issue_total": 2
+    },
+    {
+      "timestamp": "2026-05-10T09:29:58.819511",
+      "language": "python",
+      "review_issues": 0,
+      "security_issues": 2,
+      "issue_total": 2
+    },
+    {
+      "timestamp": "2026-05-10T09:30:31.776764",
+      "language": "javascript",
+      "review_issues": 0,
+      "security_issues": 2,
+      "issue_total": 2
+    },
+    {
+      "timestamp": "2026-05-10T09:30:42.616572",
+      "language": "python",
+      "review_issues": 0,
+      "security_issues": 2,
+      "issue_total": 2
+    },
+    {
+      "timestamp": "2026-05-10T10:08:38.398510",
+      "language": "javascript",
+      "review_issues": 0,
+      "security_issues": 0,
+      "issue_total": 0
+    },
+    {
+      "timestamp": "2026-05-10T10:09:21.637191",
+      "language": "javascript",
+      "review_issues": 0,
+      "security_issues": 0,
+      "issue_total": 0
+    }
+  ]
+}
