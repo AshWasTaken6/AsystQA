@@ -1,57 +1,60 @@
-function LandingPage({ openDashboard, openLogin }) {
+import MarketingNav from "./MarketingNav";
+
+const trustStats = [
+  ["4", "specialist agents"],
+  ["92", "sample QA score"],
+  ["28", "issues triaged"],
+];
+
+function LandingPage({ openDashboard, openLogin, openLanding, openPricing, openAbout }) {
   return (
     <section className="landingPage">
-      <header className="landingNav">
-        <div className="landingLogo">
-          <img src="/logo.png" alt="AsystQA Logo" />
-        </div>
-
-        <nav>
-          <button onClick={openDashboard}>Dashboard</button>
-          <button onClick={openDashboard}>Tools</button>
-          <button>Pricing</button>
-          <button>About</button>
-        </nav>
-
-        <div className="navActions">
-          <button className="ghostButton" onClick={openLogin}>
-            Sign In
-          </button>
-          <button className="orangeButton" onClick={openDashboard}>
-            Launch Command Center 🚀
-          </button>
-        </div>
-      </header>
+      <MarketingNav
+        activePage="home"
+        openLanding={openLanding}
+        openPricing={openPricing}
+        openAbout={openAbout}
+        openDashboard={openDashboard}
+        openLogin={openLogin}
+      />
 
       <main className="landingHero">
-        <div className="heroBadge">✦ AI Agents for Software QA</div>
+        <div className="heroCopy">
+          <h1>
+            Turn code into <span>actionable QA reports.</span>
+          </h1>
 
-        <h1>
-          Turn Code into <br />
-          Actionable <span>QA Reports.</span>
-        </h1>
-
-        <p>
-          AsystQA Command Center uses specialist agents to review code, scan security risks,
-          generate tests, and build clear developer-ready QA reports.
-        </p>
+          <p>
+            AsystQA Command Center uses specialist agents to review code, scan security risks,
+            generate tests, and build clear developer-ready QA reports.
+          </p>
+        </div>
 
         <div className="heroInputBox">
           <div className="codeIcon">&lt;/&gt;</div>
-          <input placeholder="Paste code or start a QA scan..." />
-          <button className="detectButton">Auto Detect⌄</button>
-          <button className="arrowButton" onClick={openDashboard}>
+          <input aria-label="Code scan prompt" placeholder="Paste code or start a QA scan..." />
+          <button className="detectButton">Auto Detect</button>
+          <button className="arrowButton" onClick={openDashboard} aria-label="Open dashboard">
             →
           </button>
         </div>
 
-        <div className="chipRow">
+        <div className="trustStrip" aria-label="AsystQA highlights">
+          {trustStats.map(([value, label]) => (
+            <div key={label}>
+              <strong>{value}</strong>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="chipRow" aria-label="Core tools">
           <span>&lt;/&gt; Code Review</span>
-          <span>🛡 Security Scan</span>
-          <span>⚗ Test Generator</span>
-          <span>📄 Report Builder</span>
-          <span>⌁ Workflow Timeline</span>
-          <span>☁ Upload File</span>
+          <span>Security Scan</span>
+          <span>Test Generator</span>
+          <span>Report Builder</span>
+          <span>Workflow Timeline</span>
+          <span>Upload File</span>
         </div>
 
         <div className="previewGrid">

@@ -1,6 +1,7 @@
 import asyncio
 
 import pytest
+from core.config import _clean_env_value
 from core.config import settings
 from httpx import ASGITransport, AsyncClient
 from main import app
@@ -14,6 +15,16 @@ def _isolate_memory(monkeypatch, tmp_path):
     monkeypatch.setattr(memory, "CHECKSUM_FILE", checksum_file)
     monkeypatch.setattr(audit, "AUDIT_FILE", tmp_path / "audit.jsonl")
     monkeypatch.setattr(tasks, "_TASKS", {})
+
+
+def test_dotenv_parser_preserves_csp_self_token():
+    value = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+        "connect-src 'self'"
+    )
+
+    assert _clean_env_value(value).endswith("connect-src 'self'")
 
 
 @pytest.mark.anyio

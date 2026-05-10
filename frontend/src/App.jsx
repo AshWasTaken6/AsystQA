@@ -3,6 +3,8 @@ import "./App.css";
 import IntroScreen from "./components/IntroScreen";
 import LoginModal from "./components/LoginModal";
 import LandingPage from "./components/WelcomePage";
+import PricingPage from "./components/PricingPage";
+import AboutPage from "./components/AboutPage";
 import Dashboard from "./components/Dashboard";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
@@ -111,6 +113,14 @@ function App() {
 
   function openLanding() {
     setScreen("landing");
+  }
+
+  function openPricing() {
+    setScreen("pricing");
+  }
+
+  function openAbout() {
+    setScreen("about");
   }
 
   function login(email, password) {
@@ -271,6 +281,29 @@ function App() {
 
       {screen === "landing" && (
         <LandingPage
+          openDashboard={openDashboard}
+          openLogin={() => setShowLogin(true)}
+          openLanding={openLanding}
+          openPricing={openPricing}
+          openAbout={openAbout}
+        />
+      )}
+
+      {screen === "pricing" && (
+        <PricingPage
+          openLanding={openLanding}
+          openPricing={openPricing}
+          openAbout={openAbout}
+          openDashboard={openDashboard}
+          openLogin={() => setShowLogin(true)}
+        />
+      )}
+
+      {screen === "about" && (
+        <AboutPage
+          openLanding={openLanding}
+          openPricing={openPricing}
+          openAbout={openAbout}
           openDashboard={openDashboard}
           openLogin={() => setShowLogin(true)}
         />

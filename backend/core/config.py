@@ -52,7 +52,10 @@ def _clean_env_value(value: str) -> str:
             value = value[:index].rstrip()
             break
 
-    return value.strip().strip('"').strip("'")
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        return value[1:-1]
+    return value
 
 
 def _env_list(name: str, default: List[str]) -> List[str]:
