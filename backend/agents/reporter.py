@@ -1,18 +1,22 @@
+from typing import Any
+
 from schemas.response import Report
 
 
 def _classify_severity(issue_text: str, source: str) -> str:
     lowered = issue_text.lower()
-    if any(keyword in lowered for keyword in ["hardcoded", "unsafe", "eval", "exec", "xss", "vulnerability", "risk", "credential"]):
+    high_keywords = ["hardcoded", "unsafe", "eval", "exec", "xss", "vulnerability", "risk", "credential"]
+    medium_keywords = ["too many print", "log", "todo", "fixme", "lines exceed", "unfinished", "maintainability"]
+    if any(keyword in lowered for keyword in high_keywords):
         return "High"
-    if any(keyword in lowered for keyword in ["too many print", "log", "todo", "fixme", "lines exceed", "unfinished", "maintainability"]):
+    if any(keyword in lowered for keyword in medium_keywords):
         return "Medium"
     if source == "security":
         return "High"
     return "Low"
 
 
-def _build_issue(entry: dict[str, str], source: str) -> dict[str, str]:
+def _build_issue(entry: dict[str, Any], source: str) -> dict[str, str]:
     title = entry.get("issue", "Issue found")
     description = entry.get("fix") or entry.get("impact") or "Review this finding."
     category = entry.get("category") or ("Security" if source == "security" else "Maintainability")
@@ -44,7 +48,7 @@ def _build_risk(score: int, issues: list[dict[str, str]]) -> str:
     return "High"
 
 
-def run_reporter(aggregated: dict[str, list[str]]) -> Report:
+def run_reporter(aggregated: dict[str, list[Any]]) -> Report:
     issue_count = len(aggregated.get("reviewer", [])) + len(aggregated.get("security", []))
     score = max(0, 100 - (issue_count * 8))
 

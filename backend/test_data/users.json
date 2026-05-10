@@ -1,0 +1,44 @@
+{
+  "admin": {
+    "username": "admin",
+    "email": "admin@asystqa.local",
+    "hashed_password": "$2b$12$bGtmYw2X0VJG0ycosTaWLeW0ZvMtpNRpwiQ3dQbAgXJOJcXl11N3O",
+    "user_id": "d324556f-5575-40b4-a2dd-ca77586f0050",
+    "roles": [
+      "admin"
+    ],
+    "mfa_enabled": false,
+    "mfa_secret": null,
+    "is_active": true,
+    "created_at": "2026-05-10T14:55:58.407930+00:00",
+    "last_login": null
+  },
+  "viewer": {
+    "username": "viewer",
+    "email": "viewer@example.com",
+    "hashed_password": "$2b$12$NNJaXkttlny..NGr4wow4OIsqCImvt4WvWcBZKHYqniMO.3CTvPGS",
+    "user_id": "c310f6be-da1e-467e-bb9b-a9e19ba05659",
+    "roles": [
+      "viewer"
+    ],
+    "mfa_enabled": false,
+    "mfa_secret": null,
+    "is_active": true,
+    "created_at": "2026-05-10T15:06:08.066951+00:00",
+    "last_login": null
+  },
+  "intuser": {
+    "username": "intuser",
+    "email": "int@example.com",
+    "hashed_password": "$2b$12$13iTcaCu59emtmgojR/FXOOQPc6BsfGtQ3iaIevX4b0Gk9.CvR04u",
+    "user_id": "56fda403-3812-4b7d-8a9d-11d4dbdf3b0b",
+    "roles": [
+      "analyst"
+    ],
+    "mfa_enabled": false,
+    "mfa_secret": null,
+    "is_active": true,
+    "created_at": "2026-05-10T15:06:54.827778+00:00",
+    "last_login": null
+  }
+}

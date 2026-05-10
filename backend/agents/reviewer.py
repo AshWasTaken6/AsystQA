@@ -1,4 +1,4 @@
-def run_reviewer(code: str, language: str) -> list[dict]:
+async def run_reviewer(code: str, language: str) -> list[dict]:
     findings: list[dict] = []
     stripped_lines = [line.rstrip() for line in code.splitlines() if line.strip()]
 

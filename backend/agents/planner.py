@@ -1,4 +1,4 @@
-def run_planner(code: str, language: str) -> list[str]:
+async def run_planner(code: str, language: str) -> list[str]:
     normalized = language.lower().strip()
     line_count = len([line for line in code.splitlines() if line.strip()])
 

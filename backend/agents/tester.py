@@ -1,4 +1,4 @@
-def run_tester(code: str, language: str) -> list[str]:
+async def run_tester(code: str, language: str) -> list[str]:
     suggestions: list[str] = []
 
     if not code.strip():

@@ -1,4 +1,4 @@
-def run_security(code: str, language: str) -> list[dict]:
+async def run_security(code: str, language: str) -> list[dict]:
     findings: list[dict] = []
     lowered = code.lower()
 
